@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cocktail Search Form</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$("#search-form").submit(function(event){
+				event.preventDefault();
+				var searchTerm = $("#search-term").val();
+				var url = "https://www.thecocktaildb.com/api/json/v1/1/search.php?s=" + searchTerm;
+				$.getJSON(url,function(data){
+					var results = data.drinks;
+					if(results){
+						$("#cocktail-list").empty();
+						$.each(results,function(index,drink){
+							$("#cocktail-list").append('<li><img src="' + drink.strDrinkThumb + '"/><h3>' + drink.strDrink + '</h3><p>' + drink.strInstructions + '</p></li>');
+						});
+					}
+					else{
+						$("#cocktail-list").empty();
+						$("#cocktail-list").append("<li>No cocktails found</li>");
+					}
+				});
+			});
+			
+			$("#random-cocktail-button").click(function(event){
+				event.preventDefault();
+				var url = "https://www.thecocktaildb.com/api/json/v1/1/random.php";
+				$.getJSON(url,function(data){
+					var drink = data.drinks[0];
+					$("#cocktail-list").empty();
+					$("#cocktail-list").append('<li><img src="' + drink.strDrinkThumb + '"/><h3>' + drink.strDrink + '</h3><p>' + drink.strInstructions + '</p></li>');
+				});
+			});
+			
+			$("#lookup-by-id-form").submit(function(event){
+				event.preventDefault();
+				var cocktailId = $("#lookup-by-id-term").val();
+				var url = "https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=" + cocktailId;
+				$.getJSON(url,function(data){
+					var drink = data.drinks[0];
+					$("#cocktail-list").empty();
+					$("#cocktail-list").append('<li><img src="' + drink.strDrinkThumb + '"/><h3>' + drink.strDrink + '</h3><p>' + drink.strInstructions + '</p></li>');
+				});
+			});
+		});
+	</script>
+	<style>
+		form{
+			display:flex;
+			flex-direction:column;
+			align-items:center;
+			margin-top:20px;
+		}
+		input[type="text"]{
+			padding:10px;
+			border-radius:5px;
+			border:1px solid #ccc;
+			margin-bottom:10px;
+			width:300px;
+			font-size:16px;
+		}
+		button[type="submit"], button[type="button"]{
+			background-color:#4CAF50;
+			color:#fff;
+			padding:10px;
+			border:none;
+			border-radius:5px;
+			cursor:pointer;
+			font-size:16px;
+			margin-right:10px;
+		}
+		ul{
+			list-style:none;
+			margin:0;
+			padding:0;
+		}
+		li{
+			display:flex;
+			flex-direction:column;
+			align-items:center;
+			margin-bottom:20px;
+			border:1px solid #ccc;
+			padding:10px;
+			border-radius:5px;
+			width:300px;
+			font-size:16px;
+		}
+		img
+        {
+            max-width:100%;
+            height:auto;
+            margin-bottom:10px;
+            }
+            h3{
+            margin-top:0;
+            font-size:24px;
+            }
+            p{
+            margin:0;
+            }
+            </style>
+            
+            </head>
+            <body>
+                <h1>Cocktail Search Form</h1>
+                <form id="search-form">
+                    <input type="text" id="search-term" placeholder="Enter a cocktail name...">
+                    <button type="submit">Search</button>
+                    <button type="button" id="random-cocktail-button">Random Cocktail</button>
+                </form>
+                <form id="lookup-by-id-form">
+                    <input type="text" id="lookup-by-id-term" placeholder="Enter a cocktail ID...">
+                    <button type="submit">Lookup by ID</button>
+                </form>
+                <ul id="cocktail-list"></ul>
+            </body>
+            </html>
+            
